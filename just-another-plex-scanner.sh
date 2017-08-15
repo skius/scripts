@@ -33,7 +33,7 @@ fi
 
 ### ATTENTION: You could run this script on a different (e.g. Plexdrive 5) mount in order to minimize stress on main mount.
 ###            Later in this script you would replace the path of the temp mount with the main mount path, so that Plex finds the files.
-###            If you don't care about the stress on your main mount, you can ignore this.
+###            If you don't care about the stress on your main mount, you can ignore this comment.
 
 echo "Listing movie files..."
 find "$MOVIELIBRARY" -type f -not -name "*.srt" > "$CACHE/movies_files"
