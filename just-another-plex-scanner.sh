@@ -45,7 +45,7 @@ then
 
     echo "Finding new movies..."
 
-    "touch $CACHE/movies_to_scan"
+    touch "$CACHE/movies_to_scan"
 
     while read -r mfile
     do
