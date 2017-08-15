@@ -19,7 +19,17 @@ TVLIBRARY="/path/to/your/plex/tv/library"
 export LD_LIBRARY_PATH=/usr/lib/plexmediaserver
 export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR=/var/lib/plexmediaserver/Library/Application\ Support
 
+
+#Setting up files and directories for first run
 mkdir -p "$CACHE"
+
+if [[ ! -f "$CACHE/movies_files_sorted_old" ]]; then
+    touch "$CACHE/movies_files_sorted_old"
+fi
+
+if [[ ! -f "$CACHE/tv_files_sorted_old" ]]; then
+    touch "$CACHE/tv_files_sorted_old"
+fi
 
 ### ATTENTION: You could run this script on a different (e.g. Plexdrive 5) mount in order to minimize stress on main mount.
 ###            Later in this script you would replace the path of the temp mount with the main mount path, so that Plex finds the files.
