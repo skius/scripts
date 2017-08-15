@@ -3,7 +3,7 @@
 # This script finds new files from your plex libraries and issues a CLI scan for them.
 # Useful in setups where Plex's automatic scan-on-new-files doesnt work such as network mounts.
 # Run this with flock on cron, as often as you like.
-#
+# Inspiration: https://github.com/ajkis/scripts/blob/master/plex/plex-scan-new.sh
 
 
 echo "########### $(date "+%d.%m.%Y %T") -  Starting Just Another Plex Scanner   #########"
