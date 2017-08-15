@@ -6,7 +6,9 @@
 #
 
 
-echo "#####   Starting Just Another Plex Scanner  - $(date "+%d.%m.%Y %T") ####"
+echo "########### $(date "+%d.%m.%Y %T") -  Starting Just Another Plex Scanner   #########"
+
+startscan=$(date +'%s')
 
 CACHE="$HOME/.cache/japs"
 MOVIESECTION=4
@@ -31,8 +33,8 @@ find "$TVLIBRARY" -type f -not -name "*.srt" > "$CACHE/tv_files"
 echo "Listed tv files"
 
 echo "Sorting files..."
-sort $CACHE/movies_files > $CACHE/movies_files_sorted
-sort $CACHE/tv_files > $CACHE/tv_files_sorted
+sort "$CACHE/movies_files" > "$CACHE/movies_files_sorted"
+sort "$CACHE/tv_files" > "$CACHE/tv_files_sorted"
 echo "Sorted files"
 
 echo ""
@@ -43,16 +45,16 @@ then
 
     echo "Finding new movies..."
 
-    touch $CACHE/movies_to_scan
+    "touch $CACHE/movies_to_scan"
 
     while read -r mfile
     do
         echo "$(date "+%d.%m.%Y %T") New file detected: $mfile"
         MFOLDER=$(dirname "${mfile}")
-        echo "$MFOLDER" >> $CACHE/movies_to_scan
-    done < <(comm -13 $CACHE/movies_files_sorted_old $CACHE/movies_files_sorted)
+        echo "$MFOLDER" >> "$CACHE/movies_to_scan"
+    done < <(comm -13 "$CACHE/movies_files_sorted_old" "$CACHE/movies_files_sorted")
 
-    sort $CACHE/movies_to_scan | uniq | tee $CACHE/movies_to_scan
+    sort "$CACHE/movies_to_scan" | uniq | tee "$CACHE/movies_to_scan"
 
     if [ -s "$CACHE/movies_to_scan" ]
     then
@@ -68,7 +70,8 @@ then
             # REPLACING TEMP MOUNT WITH MAIN MOUNT
 #            MOVIE="${MOVIE/media/unionfs}"
 #            MOVIE="${MOVIE/tmp/sorted}"
-            echo "Scanning movie \"$( basename "$MOVIE" )\" on dassdi..." | /home/skilly/scripts/telegram/telegram-pipe-plexrefresh.sh
+# Change the following line to implement some sort of notification.
+#            echo "Scanning movie \"$( basename "$MOVIE" )\" on $(hostname)..." | /some-script.sh
             echo "$(date "+%d.%m.%Y %T") Plex scan movie folder:: $MOVIE"
             $LD_LIBRARY_PATH/Plex\ Media\ Scanner --scan --refresh --section "$MOVIESECTION" --directory "$MOVIE"
         done
@@ -81,12 +84,12 @@ then
         mn=$( wc -c "$CACHE/movies_files_sorted" | awk '{print $1}')
         #echo $mo
         #echo $mn
-        if (( $(( $mn + 3000 )) > $mo )); then
+        if (( $(( $mn + 30000 )) > $mo )); then
             echo "Updating movies file"
-            mv $CACHE/movies_files_sorted $CACHE/movies_files_sorted_old
+            mv "$CACHE/movies_files_sorted" "$CACHE/movies_files_sorted_old"
         else
             echo "New movies file is significantly smaller, assuming something broke and not updating movies file."
-            rm $CACHE/movies_files_sorted
+            rm "$CACHE/movies_files_sorted"
         fi
         
         
@@ -101,9 +104,9 @@ fi
 
 echo ""
 
-rm $CACHE/movies_files
-rm $CACHE/movies_to_scan
-rm $CACHE/movies_files_sorted
+rm "$CACHE/movies_files"
+rm "$CACHE/movies_to_scan"
+rm "$CACHE/movies_files_sorted"
 
 if [ -s "$CACHE/tv_files_sorted" ]
 then
@@ -111,16 +114,16 @@ then
 
     echo "Finding new TV files..."
 
-    touch $CACHE/tv_to_scan
+    touch "$CACHE/tv_to_scan"
 
     while read -r tvfile
     do
         echo "$(date "+%d.%m.%Y %T") New file detected: $tvfile"
         MFOLDER=$(dirname "${tvfile}")
-        echo "$MFOLDER" >> $CACHE/tv_to_scan
-    done < <(comm -13 $CACHE/tv_files_sorted_old $CACHE/tv_files_sorted)
+        echo "$MFOLDER" >> "$CACHE/tv_to_scan"
+    done < <(comm -13 "$CACHE/tv_files_sorted_old" "$CACHE/tv_files_sorted")
 
-    sort $CACHE/tv_to_scan | uniq | tee $CACHE/tv_to_scan
+    sort "$CACHE/tv_to_scan" | uniq | tee "$CACHE/tv_to_scan"
 
     if [ -s "$CACHE/tv_to_scan" ]
     then
@@ -134,9 +137,10 @@ then
         for FOLDER in "${FOLDERS[@]}"
         do
             # REPLACING TEMP MOUNT WITH MAIN MOUNT
- #           FOLDER="${FOLDER/media/unionfs}"
-  #          FOLDER="${FOLDER/tmp/sorted}"
-            echo "Scanning TV show \"$( basename "$( dirname "$FOLDER" )" )\" on dassdi..." | /home/skilly/scripts/telegram/telegram-pipe-plexrefresh.sh
+#            FOLDER="${FOLDER/media/unionfs}"
+#            FOLDER="${FOLDER/tmp/sorted}"
+# Change the following line to implement some sort of notification.
+#            echo "Scanning TV show \"$( basename "$( dirname "$FOLDER" )" )\" on $(hostname)..." | /some-script.sh
             echo "$(date "+%d.%m.%Y %T") Plex scan TV folder:: $FOLDER"
             $LD_LIBRARY_PATH/Plex\ Media\ Scanner --scan --refresh --section "$TVSECTION" --directory "$FOLDER"
         done
@@ -147,12 +151,12 @@ then
 
         to=$( wc -c "$CACHE/tv_files_sorted_old" | awk '{print $1}' )
         tn=$( wc -c "$CACHE/tv_files_sorted" | awk '{print $1}')
-        if (( $(( $tn + 3000 )) > $to )); then
+        if (( $(( $tn + 30000 )) > $to )); then
             echo "Updating TV file"
-            mv $CACHE/tv_files_sorted $CACHE/tv_files_sorted_old
+            mv "$CACHE/tv_files_sorted" "$CACHE/tv_files_sorted_old"
         else
             echo "New TV file is significantly smaller, assuming something broke and not updating TV file."
-            rm $CACHE/tv_files_sorted
+            rm "$CACHE/tv_files_sorted"
         fi
 
 
@@ -166,10 +170,10 @@ else
         echo "There are no TV files (mount is likely broken, aborting TV scan)"
 fi
 
-rm $CACHE/tv_to_scan
-rm $CACHE/tv_files
-rm $CACHE/tv_files_sorted
+rm "$CACHE/tv_to_scan"
+rm "$CACHE/tv_files"
+rm "$CACHE/tv_files_sorted"
 
 
-echo "##### Just Another Plex Scanner is finished - $(date "+%d.%m.%Y %T") ####"
-echo "#########################################################"
+echo "##### $(date "+%d.%m.%Y %T") - Just Another Plex Scanner finished in $(($(date +'%s') - $startscan)) seconds ####"
+echo "#################################################################################"
