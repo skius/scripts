@@ -21,9 +21,9 @@ export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR=/var/lib/plexmediaserver/Librar
 
 mkdir -p "$CACHE"
 
-### ATTENTION: Right now I'm running this script on a different (Plexdrive 5) mount in order to minimize stress on main mount.
-###            Later in this script I am replacing the path of the temp mount with the main mount path, so that Plex finds the files.
-###            If you don't care about the stress on your main mount, before the Plex scans remove the lines which replace the path.
+### ATTENTION: You could run this script on a different (e.g. Plexdrive 5) mount in order to minimize stress on main mount.
+###            Later in this script you would replace the path of the temp mount with the main mount path, so that Plex finds the files.
+###            If you don't care about the stress on your main mount, you can ignore this.
 
 echo "Listing movie files..."
 find "$MOVIELIBRARY" -type f -not -name "*.srt" > "$CACHE/movies_files"
@@ -68,8 +68,7 @@ then
         for MOVIE in "${MOVIES[@]}"
         do
             # REPLACING TEMP MOUNT WITH MAIN MOUNT
-#            MOVIE="${MOVIE/media/unionfs}"
-#            MOVIE="${MOVIE/tmp/sorted}"
+#            MOVIE="${MOVIE/tmp/main}"
 # Change the following line to implement some sort of notification.
 #            echo "Scanning movie \"$( basename "$MOVIE" )\" on $(hostname)..." | /some-script.sh
             echo "$(date "+%d.%m.%Y %T") Plex scan movie folder:: $MOVIE"
@@ -137,8 +136,7 @@ then
         for FOLDER in "${FOLDERS[@]}"
         do
             # REPLACING TEMP MOUNT WITH MAIN MOUNT
-#            FOLDER="${FOLDER/media/unionfs}"
-#            FOLDER="${FOLDER/tmp/sorted}"
+#            FOLDER="${FOLDER/tmp/main}"
 # Change the following line to implement some sort of notification.
 #            echo "Scanning TV show \"$( basename "$( dirname "$FOLDER" )" )\" on $(hostname)..." | /some-script.sh
             echo "$(date "+%d.%m.%Y %T") Plex scan TV folder:: $FOLDER"
