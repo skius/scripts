@@ -24,11 +24,21 @@ export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR=/var/lib/plexmediaserver/Librar
 mkdir -p "$CACHE"
 
 if [[ ! -f "$CACHE/movies_files_sorted_old" ]]; then
-    touch "$CACHE/movies_files_sorted_old"
+    echo "No previous movie cache file detected, assuming all current movies are already scanned."
+    echo "If that is not the case, after this script has finished running remove $CACHE/movies_files_sorted_old and create an empty version. (This will refresh the whole movie section)"
+    find "$MOVIELIBRARY" -type f -not -name "*.srt" > "$CACHE/movies_files"
+    sort "$CACHE/movies_files" > "$CACHE/movies_files_sorted_old"
+    rm "$CACHE/movies_files"
+#touch "$CACHE/movies_files_sorted_old"
 fi
 
 if [[ ! -f "$CACHE/tv_files_sorted_old" ]]; then
-    touch "$CACHE/tv_files_sorted_old"
+    echo "No previous TV cache file detected, assuming all current TV files are already scanned."
+    echo "If that is not the case, after this script has finished running remove $CACHE/tv_files_sorted_old and create an empty version. (This will refresh the whole TV section)"
+    find "$TVLIBRARY" -type f -not -name "*.srt" > "$CACHE/tv_files"
+    sort "$CACHE/tv_files" > "$CACHE/tv_files_sorted"
+    rm "$CACHE/tv_files"
+    #touch "$CACHE/tv_files_sorted_old"
 fi
 
 ### ATTENTION: You could run this script on a different (e.g. Plexdrive 5) mount in order to minimize stress on main mount.
