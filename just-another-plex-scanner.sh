@@ -16,6 +16,13 @@ MOVIELIBRARY="/path/to/your/plex/movie/library"
 TVSECTION=3
 TVLIBRARY="/path/to/your/plex/tv/library"
 
+if [ -n "$HOME" ]; then
+    echo "Cache folder set: $CACHE"
+else
+    echo "HOME variable not set, exiting..."
+    exit 1
+fi
+
 export LD_LIBRARY_PATH=/usr/lib/plexmediaserver
 export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR=/var/lib/plexmediaserver/Library/Application\ Support
 
