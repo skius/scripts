@@ -63,13 +63,14 @@ if [ -s "$CACHE/movies_files_sorted" ]
 then
     echo "There are movies (mount is not broken)"
 
-    echo "Finding new movies..."
+    printf "\nFinding new movies"
 
     touch "$CACHE/movies_to_scan"
 
     while read -r mfile
     do
-        echo "$(date "+%d.%m.%Y %T") New file detected: $mfile"
+        printf "."
+        printf "\n$(date "+%d.%m.%Y %T") New file detected: $mfile\n"
         MFOLDER=$(dirname "${mfile}")
         echo "$MFOLDER" >> "$CACHE/movies_to_scan"
     done < <(comm -13 "$CACHE/movies_files_sorted_old" "$CACHE/movies_files_sorted")
@@ -79,7 +80,7 @@ then
     if [ -s "$CACHE/movies_to_scan" ]
     then
         echo "Found new movies"
-        echo "Starting plex movies scan..."
+        printf "\nStarting plex movies scan"
         
         #aborting if exit != 0
         set -e
@@ -87,11 +88,12 @@ then
         readarray -t MOVIES < "$CACHE/movies_to_scan"
         for MOVIE in "${MOVIES[@]}"
         do
+            printf "."
             # REPLACING TEMP MOUNT WITH MAIN MOUNT
 #            MOVIE="${MOVIE/tmp/main}"
 # Change the following line to implement some sort of notification.
 #            echo "Scanning movie \"$( basename "$MOVIE" )\" on $(hostname)..." | /some-script.sh
-            echo "$(date "+%d.%m.%Y %T") Plex scan movie folder:: $MOVIE"
+            printf "\n$(date "+%d.%m.%Y %T") Plex scan movie folder:: $MOVIE\n"
             $LD_LIBRARY_PATH/Plex\ Media\ Scanner --scan --refresh --section "$MOVIESECTION" --directory "$MOVIE"
         done
         
